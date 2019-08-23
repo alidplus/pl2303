@@ -88,6 +88,9 @@ class UsbSerial extends EventEmitter {
     device.open();
     assert(device.interfaces.length === 1);
     [this.iface] = device.interfaces;
+    if (this.iface.isKernelDriverActive()) {
+       this.iface.detachKernelDriver()
+    }
     this.iface.claim();
     const intEp = findEp(this.iface, usb.LIBUSB_TRANSFER_TYPE_INTERRUPT, 'in');
     intEp.on('data', (data) => {
